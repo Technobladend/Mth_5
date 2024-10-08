@@ -4,6 +4,7 @@ from .models import Director, Movie, Review
 from .serializible import (
     DirectorSerializer,
     MovieSerializer,
+    MovieReviewSerializer,
     ReviewSerializer,
 )
 
@@ -30,7 +31,7 @@ def director_details_api_view(request, id):
 
 @api_view(['GET'])
 def movie_list_api_view(request):
-    movies = Movie.objects.all()
+    movies = Movie.objects.prefetch_related('reviews').all()
     data = MovieSerializer(instance=movies, many=True).data
     return Response(data=data)
 
@@ -41,9 +42,19 @@ def movie_details_api_view(request, id):
     try:
         movie = Movie.objects.get(id=id)
         data = MovieSerializer(instance=movie).data
+        data.pop('reviews', None)
+        data.pop('average_rating', None)
         return Response(data=data)
     except Movie.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND, data={'detail': 'Movie does not exist in database'})
+    
+
+@api_view(['GET'])
+def movie_reviews_list_api_view(request):
+    movies = Movie.objects.all()
+    data = MovieReviewSerializer(instance=movies, many=True).data
+    return Response(data=data, status=status.HTTP_200_OK)
+    
     
 
 
@@ -62,3 +73,4 @@ def review_details_api_view(request, id):
         return Response(data=data)
     except Review.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND, data={'detail': 'Review does not exist in database'})
+    
