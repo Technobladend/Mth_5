@@ -4,11 +4,10 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('directors/', views.director_list_create_api_view, name='director_list'),
-    path('directors/<int:id>/', views.director_details_api_view, name='director_id'),
-    path('movies/', views.movie_list_create_api_view, name='movie_list'),
-    path('movies/<int:id>/', views.movie_details_api_view, name='movie_id'),
-    path('reviews/', views.review_list_create_api_view, name='review_list'),
-    path('reviews/<int:id>/', views.review_details_api_view, name='review_id'),
-    path('movies/reviews/', views.movie_reviews_list_api_view, name='movie_review')
+    path('directors/', views.DirectorListAPIView.as_view(), name='director_list'),
+    path('directors/<int:id>/', views.DirectorDetailView.as_view(), name='director_id'),
+    path('movies/', views.MovieListAPIView.as_view(), name='movie_list'),
+    path('movies/<int:id>/', views.MovieDetailView.as_view(), name='movie_id'),
+    path('reviews/', views.ReviewListAPIView.as_view(), name='review_list'),
+    path('reviews/<int:id>/', views.ReviewDetailView.as_view(), name='review_id'),
 ]
